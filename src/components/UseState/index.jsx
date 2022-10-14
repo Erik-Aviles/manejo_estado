@@ -15,7 +15,7 @@ const UseState = ({name}) => {
 
   })
 
-  const handleComprobar = () =>{
+  const onCheck = () =>{
     setState({
       ...state, 
       loading: true
@@ -29,23 +29,46 @@ const UseState = ({name}) => {
     });
   }
 
+  const onConfirm = () => {
+    setState({
+      ...state, 
+      error: false,
+      loading: false, 
+      confirmed: true
+    });
+  }
+
+  const onError = () => {
+    setState({
+      ...state, 
+      error: true, 
+      loading: false,
+    }); 
+  }
+  const onDelete = () => {
+    setState({...state, 
+      confirmed: true, 
+      deleted: true
+    })
+  }
+
+  const onRestore = () => {
+    setState({
+      ...state,
+      confirmed: false, 
+      deleted:false,
+      value:''
+    })
+  }
+
   useEffect(() => {
     if (state.loading) {
       setTimeout(() => {
         console.log('Validando')
         if (state.value === SEGURITY_CODE) {
-          setState({
-            ...state, 
-            error: false,
-            loading: false, 
-            confirmed: true
-          });
+          onConfirm()
         }else {
-          setState({
-            ...state, 
-            error: true, 
-            loading: false,
-          });         
+         onError()        
         }
         console.log('validado')
   
@@ -71,7 +94,7 @@ const UseState = ({name}) => {
         />
         <button 
           type='button' 
-          onClick={handleComprobar}
+          onClick={onCheck}
           > Comprobar
         </button>
   
@@ -87,20 +110,13 @@ const UseState = ({name}) => {
           <h2>Eliminar {name} </h2>
           <p>Seguro que quieres eliminar {name}</p>
           <button
-            onClick={() => {
-              setState({...state, 
-                confirmed: true, 
-                deleted: true
-              })
-            }}>Si, Eliminar</button>
+            onClick={onDelete}
+            >Si, Eliminar
+          </button>
           <button
-            onClick={() => {
-             setState({
-              ...state, 
-              confirmed: false, 
-              value:''
-            })
-            }}>No, volver</button>
+            onClick={onRestore}>
+              No, volver
+            </button>
         </div>
       </React.Fragment>
     );
@@ -110,14 +126,7 @@ const UseState = ({name}) => {
       <div>
         <h2>{name} fue eliminado</h2>
         <button
-         onClick={()=>{
-          setState({
-            ...state,
-            confirmed: false, 
-            deleted:false,
-            value:''
-          })
-         }}>Recuperar {name}</button>
+         onClick={onRestore}>Recuperar {name}</button>
       </div>
       </React.Fragment>
     );
